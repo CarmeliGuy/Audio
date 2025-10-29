@@ -1,0 +1,34 @@
+# --- First push script for new GitHub project ---
+
+# (Optional) set your global identity once
+git config --global user.name "CarmeliGuy"
+git config --global user.email "carmeli.g.inov@gmail.com"
+
+# Initialize repo (skip if already done)
+git init
+
+# Create a .gitignore if none exists
+@"
+__pycache__/
+.env
+*.pt
+*.onnx
+*.bin
+*.zip
+*.mp4
+"@ | Out-File ".gitignore" -Encoding UTF8 -Force
+
+# Stage and commit everything
+git add .
+git commit -m "Initial commit"
+
+# Rename branch to main
+git branch -M main
+
+# Add remote (replace URL with your repo)
+git remote add origin https://github.com/CarmeliGuy/Audio.git
+
+# Push to GitHub
+git push -u origin main
+
+Write-Host "✅ First push complete: https://github.com/CarmeliGuy/Audio"

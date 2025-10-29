@@ -1,0 +1,31 @@
+                ┌────────────────────────────────────┐
+                │  Client (e.g. curl / app request)  │
+                └────────────────────────────────────┘
+                                │
+                                ▼
+        ┌─────────────────────────────────────────────┐
+        │        Flask /SpeechToTextService/Listen    │
+        └─────────────────────────────────────────────┘
+                                │
+                                ▼
+        ┌─────────────────────────────────────────────┐
+        │         STTService.listen_until_silence     │
+        │ - start AudioStream                         │
+        │ - loop until ≥2.5 s silence detected        │
+        │ - every ~60 s pull last buffer              │
+        │ - spawn transcription thread if free        │
+        └─────────────────────────────────────────────┘
+                                │
+              ┌─────────────────┴────────────────┐
+              ▼                                  ▼
+    ┌───────────────────────┐          ┌────────────────────────┐
+    │ AudioStream callback  │          │ STTService._process_buf│
+    │ - capture mic chunks  │          │ - Whisper/Meta decode  │
+    │ - fill active buffer  │          │ - optional Gemma fix   │
+    │ - flip on 60 s + quiet│          │ - append to full_text  │
+    └───────────────────────┘          └────────────────────────┘
+                                │
+                                ▼
+             ┌─────────────────────────────────────────────┐
+             │          Return JSON with full text         │
+             └─────────────────────────────────────────────┘
